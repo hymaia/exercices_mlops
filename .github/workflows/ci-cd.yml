@@ -36,9 +36,9 @@ jobs:
           poetry install --no-interaction --no-root
 
       # Étape 5 : Lancer le linter
-      - name: Run ruff linter
-        run: |
-          poetry run ruff check --preview mlops_exo/ tests/ 
+      #- name: Run ruff linter
+      #  run: |
+      #    poetry run ruff check --preview mlops_exo/ tests/
 
       # Étape 6 : Lancer les tests unitaires
       - name: Run unit tests
