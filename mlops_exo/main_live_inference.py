@@ -9,7 +9,7 @@ import warnings
 import mlflow
 import time
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 ##########################################################
 # PART 1 : inference with all features already computes  #
@@ -17,32 +17,33 @@ warnings.filterwarnings('ignore')
 
 print("----- PARTIE 1 : prédiction avec toutes les features déjà données")
 data_json_1 = {
-    "dataframe_records": [{"Store": 8986.8302954228,
-                           "Dept": 11883.1919251024,
-                           "Temperature": 30.34,
-                           "Fuel_Price": 3.811,
-                           "MarkDown1": 0.0,
-                           "MarkDown2": 0.0,
-                           "MarkDown3": 0.0,
-                           "MarkDown4": 0.0,
-                           "MarkDown5": 0.0,
-                           "CPI": 134.0682581,
-                           "Unemployment": 7.658,
-                           "Size": 123737.0,
-                           "MarkdownsSum": 0.0,
-                           "Day": 1.0,
-                           "Week": 13.0,
-                           "Month": 4.0,
-                           "Year": 2011.0,
-                           "Days_to_Thansksgiving": 237.0,
-                           "Days_to_Christmas": 267.0,
-                           "SuperBowlWeek": 0.0,
-                           "LaborDayWeek": 0.0,
-                           "ThanksgivingWeek": 0.0,
-                           "ChristmasWeek": 0.0
-                           }
-                          ]
-
+    "dataframe_records": [
+        {
+            "Store": 8986.8302954228,
+            "Dept": 11883.1919251024,
+            "Temperature": 30.34,
+            "Fuel_Price": 3.811,
+            "MarkDown1": 0.0,
+            "MarkDown2": 0.0,
+            "MarkDown3": 0.0,
+            "MarkDown4": 0.0,
+            "MarkDown5": 0.0,
+            "CPI": 134.0682581,
+            "Unemployment": 7.658,
+            "Size": 123737.0,
+            "MarkdownsSum": 0.0,
+            "Day": 1.0,
+            "Week": 13.0,
+            "Month": 4.0,
+            "Year": 2011.0,
+            "Days_to_Thansksgiving": 237.0,
+            "Days_to_Christmas": 267.0,
+            "SuperBowlWeek": 0.0,
+            "LaborDayWeek": 0.0,
+            "ThanksgivingWeek": 0.0,
+            "ChristmasWeek": 0.0,
+        }
+    ]
 }
 
 # Envoyez une requête POST à l'URL du modèle
@@ -59,12 +60,14 @@ print(">>> Prédiction obtenue : %s " % response.json())
 
 print("\n----- PARTIE 2 : prédiction avec un script d'inférence")
 data_sales_2 = {
-    "dataframe_records": [{
-        "Store": 10,
-        "Dept": 5,
-        "Date": "2011-04-01",
-        "IsHoliday": False,
-    }]
+    "dataframe_records": [
+        {
+            "Store": 10,
+            "Dept": 5,
+            "Date": "2011-04-01",
+            "IsHoliday": False,
+        }
+    ]
 }
 df_sales_2 = pd.DataFrame(data_sales_2["dataframe_records"])
 
@@ -74,7 +77,9 @@ artifact_uri = f"mlruns/775813977241975473/%s/artifacts" % mlflow_run_id
 
 # TODO 4.1.D : chargez tous les artefacts
 cleaner = joblib.load(os.path.join(artifact_uri, "cleaner.pkl"))
-features_transformer = joblib.load(os.path.join(artifact_uri, "features_transformer.pkl"))
+features_transformer = joblib.load(
+    os.path.join(artifact_uri, "features_transformer.pkl")
+)
 df_features = pd.read_csv(os.path.join(artifact_uri, "features.csv"))
 df_stores = pd.read_csv(os.path.join(artifact_uri, "stores.csv"))
 
@@ -102,6 +107,7 @@ print(response)
 
 # sys.exit(0)  # TODO 4.2 : supprimez cette ligne
 
+
 def predict_with_monitoring(data_json_to_predict: dict):
     """
     Predicts a given observations, logs the latency and the error
@@ -111,8 +117,9 @@ def predict_with_monitoring(data_json_to_predict: dict):
     # prepare data and log latency
     start_time = time.time()
     try:
-        prediction = requests.post("http://0.0.0.0:5052/invocations", json=data_json_to_predict).json()["predictions"][
-            0]
+        prediction = requests.post(
+            "http://0.0.0.0:5052/invocations", json=data_json_to_predict
+        ).json()["predictions"][0]
         is_error = 0
     except:
         prediction = 0
@@ -145,7 +152,11 @@ with mlflow.start_run() as run:
     for i in range(100):
         time.sleep(0.1)
         current_instance = pd.DataFrame(df_test.iloc[i]).T
-        df_processed = prepare_and_transform_data(current_instance, df_features, df_stores)
-        data_json_to_predict = {"dataframe_records": df_processed.to_dict(orient="records")}
+        df_processed = prepare_and_transform_data(
+            current_instance, df_features, df_stores
+        )
+        data_json_to_predict = {
+            "dataframe_records": df_processed.to_dict(orient="records")
+        }
         prediction = predict_with_monitoring(data_json_to_predict)
         print("live inference (%s) : prediction = %s" % (i, prediction))

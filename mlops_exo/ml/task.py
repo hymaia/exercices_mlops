@@ -17,8 +17,12 @@ def train_model(x_train: pd.DataFrame, y_train: pd.Series) -> RandomForestRegres
     max_depth = 20
     min_samples_split = 10
     random_state = 42
-    dict_params = {"n_estimators": n_estimators, "max_depth": max_depth,
-                   "min_samples_split": min_samples_split, "random_state": random_state}
+    dict_params = {
+        "n_estimators": n_estimators,
+        "max_depth": max_depth,
+        "min_samples_split": min_samples_split,
+        "random_state": random_state,
+    }
 
     # print example
     print("observation example")
@@ -26,7 +30,11 @@ def train_model(x_train: pd.DataFrame, y_train: pd.Series) -> RandomForestRegres
 
     # entrainement du modèle
     model = RandomForestRegressor(
-        n_estimators=n_estimators, random_state=random_state, max_depth=max_depth, min_samples_split=min_samples_split, n_jobs=-1
+        n_estimators=n_estimators,
+        random_state=random_state,
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        n_jobs=-1,
     )
     model.fit(x_train, y_train)
     return model, dict_params

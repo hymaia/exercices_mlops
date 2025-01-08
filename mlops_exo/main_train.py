@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append("..")
 import pandas as pd
 import joblib
@@ -8,7 +9,8 @@ from mlops_exo.features.task import FeaturesEngineering
 from mlops_exo.ml.task import train_model, predict_with_model
 from mlops_exo.ml.validation import split_train_and_val_sets, compute_metrics
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 
 def main():
@@ -48,8 +50,12 @@ def main():
     # train model
     print("\n----- Train model and make predictions")
     model, dict_params = train_model(x_train, y_train)
-    pred_train = pd.Series(predict_with_model(x_train, model), name="prediction", index=x_train.index)
-    pred_val = pd.Series(predict_with_model(x_val, model), name="prediction", index=x_val.index)
+    pred_train = pd.Series(
+        predict_with_model(x_train, model), name="prediction", index=x_train.index
+    )
+    pred_val = pd.Series(
+        predict_with_model(x_val, model), name="prediction", index=x_val.index
+    )
 
     # display metrics
     print("\n----- Evaluating model")
@@ -62,7 +68,9 @@ def main():
     print("\n----- save model, predictions and artifacts")
 
     # save predictions
-    pd.DataFrame(pred_train).to_parquet("../data/processed/pred_train.parquet", index=True)
+    pd.DataFrame(pred_train).to_parquet(
+        "../data/processed/pred_train.parquet", index=True
+    )
     pd.DataFrame(pred_val).to_parquet("../data/processed/pred_val.parquet", index=True)
 
     # save local artefacts
@@ -74,6 +82,7 @@ def main():
     # TODO - exercice 3.3 : lancer le run MLFlow et assignez un nom à l'exérimentation
     # ------------------------------------------------------------------------------------
     import mlflow
+
     mlflow.set_experiment("Random Forest")
     with mlflow.start_run():
         mlflow.log_artifact("../models/cleaner.pkl")
@@ -90,9 +99,15 @@ def main():
         # TODO - exercice 4.1 : enregistrer le modèle et la signature
         # ------------------------------------------------------------------------------------
         from mlflow.models import infer_signature
+
         signature = infer_signature(x_train, model.predict(x_train))
-        mlflow.sklearn.log_model(model, "model", signature=signature, input_example=x_train.head(20),
-                                 registered_model_name="random forest")
+        mlflow.sklearn.log_model(
+            model,
+            "model",
+            signature=signature,
+            input_example=x_train.head(20),
+            registered_model_name="random forest",
+        )
         # ------------------------------------------------------------------------------------
 
         # affichage du lieu de sauvegarde des artefacts

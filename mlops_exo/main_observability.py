@@ -17,7 +17,6 @@ from evidently import ColumnMapping
 
 
 if __name__ == "__main__":
-
     # TODO - exercice 4.3.A : créer les jeux de référence et current
     # ------------------------------------------------------------------------------------
     #
@@ -56,10 +55,18 @@ if __name__ == "__main__":
             RegressionErrorBiasTable(options={"render": {"raw_data": True}}),
         ],
     )
-    model_drift_report.run(reference_data=None, current_data=df_current.sample(10000), column_mapping=column_mapping)
+    model_drift_report.run(
+        reference_data=None,
+        current_data=df_current.sample(10000),
+        column_mapping=column_mapping,
+    )
     model_drift_report.save_html("../reports/model_drift_report.html")
 
     # Créer un rapport de Data Drift
     data_drift_report = Report(metrics=[DataDriftPreset()])
-    data_drift_report.run(reference_data=df_reference, current_data=df_current, column_mapping=column_mapping)
+    data_drift_report.run(
+        reference_data=df_reference,
+        current_data=df_current,
+        column_mapping=column_mapping,
+    )
     data_drift_report.save_html("../reports/data_drift_report.html")

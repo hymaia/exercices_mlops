@@ -5,11 +5,12 @@ on:
     branches:
       - main
       - staging
+      - dev-cicd
   pull_request:
     branches:
       - main
       - staging
-
+      - dev-cicd
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
