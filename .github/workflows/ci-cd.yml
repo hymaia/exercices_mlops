@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - staging
   pull_request:
     branches:
       - main
+      - staging
 
 jobs:
   test-and-lint:
@@ -25,29 +27,19 @@ jobs:
       # Étape 3 : installer poetry
       - name: Install Poetry
         run: |
-      #     TODO : écrire instruction pour installer poetry
+          curl -sSL https://install.python-poetry.org | python -
 
-      # Étape 4 : TODO : installer les dépendances avec poetry
-      # ------------------------------------------------------------------------------------
-      #
-      #
-      #
-      #
-      # ------------------------------------------------------------------------------------
+      # Étape 4 : Installer les dépendances avec poetry
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root
 
-      # Étape 5 : TODO : appliquer le linter ruff
-      # ------------------------------------------------------------------------------------
-      #
-      #
-      #
-      #
-      # ------------------------------------------------------------------------------------
+      # Étape 5 : Lancer le linter
+      - name: Run ruff linter
+        run: |
+          poetry run ruff check --preview mlops_exo/ tests/ 
 
-
-      # Étape 6 : TODO Lancer les tests unitaires
-      # ------------------------------------------------------------------------------------
-      #
-      #
-      #
-      #
-      # ------------------------------------------------------------------------------------
+      # Étape 6 : Lancer les tests unitaires
+      - name: Run unit tests
+        run: |
+          poetry run pytest

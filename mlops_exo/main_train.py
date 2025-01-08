@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import pandas as pd
 import joblib
 from mlops_exo.gathering.task import DataCollector
@@ -71,31 +73,30 @@ def main():
     # save model
     # TODO - exercice 3.3 : lancer le run MLFlow et assignez un nom à l'exérimentation
     # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+    import mlflow
+    mlflow.set_experiment("Random Forest")
+    with mlflow.start_run():
+        mlflow.log_artifact("../models/cleaner.pkl")
+        mlflow.log_artifact("../models/features_transformer.pkl")
+        mlflow.log_artifact("../data/raw/features.csv")
+        mlflow.log_artifact("../data/raw/stores.csv")
 
-    # TODO - exercice 3.3 : enregistrer les paramètres et se trouvant dans dict_params
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # dans main_live_inference.py
+        mlflow.log_artifact("../models/cleaner.pkl")
+        mlflow.log_artifact("../models/features_transformer.pkl")
+        mlflow.log_artifact("../data/raw/features.csv")
+        mlflow.log_artifact("../data/raw/stores.csv")
 
-    # TODO - exercice 3.3 : enregistrer les métriques dans dict_metrics_train et dict_metrics_val
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # TODO - exercice 4.1 : enregistrer le modèle et la signature
+        # ------------------------------------------------------------------------------------
+        from mlflow.models import infer_signature
+        signature = infer_signature(x_train, model.predict(x_train))
+        mlflow.sklearn.log_model(model, "model", signature=signature, input_example=x_train.head(20),
+                                 registered_model_name="random forest")
+        # ------------------------------------------------------------------------------------
 
-    # TODO - exercice 3.3 : enregistrer les artefacts
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
-
-    # TODO - exercice 4.1 : enregistrer le modèle et la signature
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
-
-    # affichage du lieu de sauvegarde des artefacts
-    # print_mlflow_artefact_uri() # TODO - exercice 4.1 : à ré-activer
+        # affichage du lieu de sauvegarde des artefacts
+        # print_mlflow_artefact_uri() # TODO - exercice 4.1 : à ré-activer
 
 
 if __name__ == "__main__":
