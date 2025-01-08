@@ -95,7 +95,6 @@ data_json_2 = {"dataframe_records": df_sales_2.to_dict(orient="records")}
 response = requests.post("http://0.0.0.0:5052/invocations", json=data_json_2)
 print(response)
 
-
 ##########################################################
 # PART 3 : alerting et monitoring                        #
 ##########################################################
