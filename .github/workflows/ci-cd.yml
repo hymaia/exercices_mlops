@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - dev-danelad-cicd
   pull_request:
     branches:
       - main
+      - dev-danelad-cicd
 
 jobs:
   test-and-lint:
