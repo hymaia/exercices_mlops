@@ -7,6 +7,9 @@ from ml.task import train_model, predict_with_model
 from ml.validation import split_train_and_val_sets, compute_metrics
 import warnings
 import os
+import mlflow
+import mlflow.sklearn
+from mlflow.models import infer_signature
 warnings.filterwarnings('ignore')
 
 
@@ -73,28 +76,52 @@ def main():
     # save model
     # TODO - exercice 3.3 : lancer le run MLFlow et assignez un nom à l'exérimentation
     # ------------------------------------------------------------------------------------
-    #
+    # Initialisation MLflow
+    mlflow.set_tracking_uri(os.path.join(current_dir, "mlruns"))
+    mlflow.set_experiment("Exo MLOps - Random Forest")
+    with mlflow.start_run():
+        artifact_uri = mlflow.get_artifact_uri()
     # ------------------------------------------------------------------------------------
 
-    # TODO - exercice 3.3 : enregistrer les paramètres et se trouvant dans dict_params
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # TODO - exercice 3.3 : enregistrer les paramètres et se trouvant dans dict_params
+        # ------------------------------------------------------------------------------------
+        # Sauvegarde des paramètres
+        # mlflow.log_params(dict_params)
+        mlflow.log_param("max_depth", dict_params["max_depth"])
+        mlflow.log_param("n_estimators", dict_params["n_estimators"])
+        mlflow.log_param("min_samples_split", dict_params["min_samples_split"])
+        mlflow.log_param("random_state", dict_params["random_state"])
+        # ------------------------------------------------------------------------------------
 
-    # TODO - exercice 3.3 : enregistrer les métriques dans dict_metrics_train et dict_metrics_val
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # TODO - exercice 3.3 : enregistrer les métriques dans dict_metrics_train et dict_metrics_val
+        # ------------------------------------------------------------------------------------
+        # Sauvegarde des métriques
+        # mlflow.log_metrics(dict_metrics_train)
+        # mlflow.log_metrics(dict_metrics_val)
+        mlflow.log_metric("mae_train", dict_metrics_train["mae_train"])
+        mlflow.log_metric("mse_train", dict_metrics_train["mse_train"])
+        mlflow.log_metric("mape_train", dict_metrics_train["mape_train"])
+        mlflow.log_metric("mae_val", dict_metrics_val["mae_val"])
+        mlflow.log_metric("mse_val", dict_metrics_val["mse_val"])
+        mlflow.log_metric("mape_val", dict_metrics_val["mape_val"])
+        # ------------------------------------------------------------------------------------
 
-    # TODO - exercice 3.3 : enregistrer les artefacts
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # TODO - exercice 3.3 : enregistrer les artefacts
+        # ------------------------------------------------------------------------------------
+        # Sauvegarde des artefacts
+        mlflow.log_artifact(os.path.join(current_dir, "../models", "cleaner.pkl"))
+        mlflow.log_artifact(os.path.join(current_dir, "../models", "features_transformer.pkl"))
+        mlflow.log_artifact(os.path.join(current_dir, "../data/raw/features.csv"))
+        mlflow.log_artifact(os.path.join(current_dir, "../data/raw/stores.csv"))
+        mlflow.log_artifact(os.path.join(current_dir, "../models", "model.pkl"))
+        # ------------------------------------------------------------------------------------
 
-    # TODO - exercice 4.1 : enregistrer le modèle et la signature
-    # ------------------------------------------------------------------------------------
-    #
-    # ------------------------------------------------------------------------------------
+        # TODO - exercice 4.1 : enregistrer le modèle et la signature
+        # ------------------------------------------------------------------------------------
+        # Sauvegarde du modèle
+        signature = infer_signature(x_train, model.predict(x_train))
+        mlflow.sklearn.log_model(model, "model", signature=signature, input_example=x_train.iloc[0:1])
+        # ------------------------------------------------------------------------------------
 
 
 
