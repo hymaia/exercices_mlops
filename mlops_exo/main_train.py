@@ -10,7 +10,13 @@ import os
 import mlflow
 from mlflow.models.signature import infer_signature
 from config import DATA_RAW, DATA_PROCESSED, MODELS_DIR
+from pathlib import Path
 warnings.filterwarnings('ignore')
+
+# Configure MLflow for Codespaces - use absolute path to mlruns
+project_root = Path(__file__).parent.parent
+mlruns_path = project_root / "mlops_exo" / "mlruns"
+mlflow.set_tracking_uri(f"file://{mlruns_path.absolute()}")
 
 
 def main():
@@ -110,7 +116,7 @@ def main():
         print(f"Experiment ID: {run.info.experiment_id}")
         print(f"Run ID: {run.info.run_id}")
         signature = infer_signature(x_train, pred_train)
-        mlflow.sklearn.log_model(model, name="model", signature=signature, input_example=x_train.iloc[0:1])
+        mlflow.sklearn.log_model(model, artifact_path="model", signature=signature, input_example=x_train.iloc[0:1])
         # ------------------------------------------------------------------------------------
         
         # Exercice 4.1.C : Enregistrer les artefact manquants

@@ -53,11 +53,11 @@ def test_compute_days_until_christmas_1st_december():
     data = {"Date": ["2025-12-01"]}
     df = pd.DataFrame(data)
     expected_output = pd.DataFrame(
-        data={"Date": ["2025-12-01"], "Days_to_Christmas": [23]}
+        data={"Date": ["2025-12-01"], "Days_to_Christmas": [24]}
     )
 
     # When : compute days until Christmas
     output = holidays_computer.compute_days_until_christmas(df)
 
-    # Then : expected answer is 23
+    # Then : expected answer is 24
     pd.testing.assert_frame_equal(output, expected_output)
